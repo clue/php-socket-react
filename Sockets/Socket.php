@@ -33,6 +33,11 @@ class Socket
         }
     }
 
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
     public function poll()
     {
         if ($this->selectRead()) {
