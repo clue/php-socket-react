@@ -6,8 +6,12 @@ namespace Sockets;
 class SelectPoller
 {
     private $loop;
-    private $pollInterval = 0.01;
     private $tid = null;
+
+    private $pollInterval = 0.01;
+    private $pollDurationSec = 0;
+    private $pollDurationUsec = 0;
+
     private $readSockets = array();
     private $readListeners = array();
     private $writeSockets = array();
@@ -29,6 +33,17 @@ class SelectPoller
         }
     }
 
+    public function setPollDuration($pollDuration)
+    {
+        $this->pollDurationSec = (int)$pollDuration;
+        $this->pollDurationUsec = (int)(($pollDuration - (int)$pollDuration) * 1000000);
+    }
+
+    public function getPollDuration()
+    {
+        return ($this->pollDurationSec + $this->pollDurationUsec / 1000000);
+    }
+
     public function resume()
     {
         if ($this->tid === null && ($this->read || $this->write)) {
@@ -48,7 +63,7 @@ class SelectPoller
     {
         $read = $this->readSockets ? $this->readSockets : null;
         $write = $this->writeSockets ? $this->writeSockets : null;
-        $ret = socket_select($read, $write, $x = null, 0);
+        $ret = socket_select($read, $write, $x = null, $this->pollDurationSec, $this->pollDurationUsec);
         if ($ret) {
             foreach ($read as $socket) {
                 $id = (int)$socket;
