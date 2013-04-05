@@ -18,6 +18,17 @@ class SelectPoller
         $this->loop = $loop;
     }
 
+    public function setPollInterval($pollInterval)
+    {
+        $this->pollInterval = $pollInterval;
+
+        // restart with new interval in case it's currently running
+        if ($this->tid !== null) {
+            $this->pause();
+            $this->resume();
+        }
+    }
+
     public function resume()
     {
         if ($this->tid === null && ($this->read || $this->write)) {
