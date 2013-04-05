@@ -2,6 +2,8 @@
 
 namespace Sockets;
 
+use React\EventLoop\LoopInterface;
+
 // modelled closely after React\EventLoop\StreamSelectLoop
 class SelectPoller
 {

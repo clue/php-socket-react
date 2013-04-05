@@ -2,7 +2,7 @@
 
 namespace Sockets;
 
-use React\EventLoop;
+use React\EventLoop\LoopInterface;
 
 class Socket
 {
@@ -11,7 +11,7 @@ class Socket
     private $pollInterval;
     private $tid = null;
 
-    public function __construct($resource, $pollInterval = 0.01, EventLoopInterface $loop)
+    public function __construct($resource, $pollInterval = 0.01, LoopInterface $loop)
     {
         $this->resource = $resource;
         $this->pollInterval = $pollInterval;
