@@ -62,6 +62,8 @@ class SelectPoller
         if (!isset($this->readSockets[$id])) {
             $this->readSockets[$id] = $socket;
             $this->readListeners[$id] = $listener;
+
+            $this->resume();
         }
     }
 
@@ -71,6 +73,8 @@ class SelectPoller
         if (!isset($this->writeSockets[$id])) {
             $this->writeSockets[$id] = $socket;
             $this->writeListeners[$id] = $listener;
+
+            $this->resume();
         }
     }
 
@@ -78,12 +82,20 @@ class SelectPoller
     {
         $id = (int)$socket;
         unset($this->readSockets[$id], $this->readListeners[$id]);
+
+        if (!$this->readSockets && !$this->writeSockets) {
+            $this->pause();
+        }
     }
 
     public function removeWriteSocket($socket)
     {
         $id = (int)$socket;
         unset($this->writeSockets[$id], $this->writeListeners[$id]);
+
+        if (!$this->writeSockets && !$this->readSockets) {
+            $this->pause();
+        }
     }
 
     public function removeSocket($socket)
