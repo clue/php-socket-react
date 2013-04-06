@@ -47,7 +47,6 @@ class Datagram extends EventEmitter
 
     public function close()
     {
-        $this->emit('end', array($this));
         $this->emit('close', array($this));
 
         $this->pause();
