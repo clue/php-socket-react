@@ -35,6 +35,11 @@ class SelectPoller
         }
     }
 
+    public function getPollInterval()
+    {
+        return $this->pollInterval;
+    }
+
     public function setPollDuration($pollDuration)
     {
         $this->pollDurationSec = (int)$pollDuration;
