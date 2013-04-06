@@ -1,0 +1,47 @@
+<?php
+
+namespace Sockets;
+
+class DatagramBuffer
+{
+    private $outgoing = array();
+    private $outgoingLength = 0;
+
+    private $softLimit = 65536;
+
+    public function __construct(Socket $socket, SelectPoller $poller)
+    {
+        $this->socket = $socket;
+        $this->poller = $poller;
+    }
+
+    public function send($data, $remote)
+    {
+        $this->outgoing []= array($data, $remote);
+        $this->outgoingLength += strlen($data);
+
+        $this->poller->addWriteSocket($this->socket->getResource(), array($this, 'handleWrite'));
+
+        return ($this->outgoingLength < $this->softLimit);
+    }
+
+    public function handleWrite()
+    {
+        list($data, $remote) = array_shift($this->outgoing);
+        $this->outgoingLength -= strlen($data);
+
+        $this->socket->sendTo($data, 0, $remote);
+
+        if (!$this->outgoing) {
+            $this->poller->removeWriteSocket($this->socket->getResource());
+        }
+    }
+
+    public function close()
+    {
+        $this->poller->removeWriteSocket($this->socket->getResource());
+
+        $this->outgoing = array();
+        $this->outgoingLength = 0;
+    }
+}

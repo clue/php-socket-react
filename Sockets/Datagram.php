@@ -6,13 +6,15 @@ class Datagram extends EventEmitter
 {
     private $socket;
     private $poller;
-    private $outgoing = array();
+    private $buffer;
     private $bufferSize = 65536;
 
     public function __construct(Socket $socket, SelectPoller $poller)
     {
         $this->socket = $socket;
         $this->poller = $poller;
+
+        $this->buffer = new DatagramBuffer($socket, $poller);
 
         $this->resume();
     }
@@ -27,20 +29,9 @@ class Datagram extends EventEmitter
         $this->poller->removeReadSocket($this->socket->getResource());
     }
 
-    public function send($buffer, $remote)
+    public function send($data, $remote)
     {
-        $this->outgoing []= array($buffer, $remote);
-        $this->poller->addWriteSocket($this->socket->getResource(), array($this, 'handleWrite'));
-    }
-
-    public function handleWrite()
-    {
-        list($buffer, $remote) = array_shift($this->outgoing);
-        $this->socket->sendTo($buffer, 0, $remote);
-
-        if (!$this->outgoing) {
-            $this->poller->removeWriteSocket($this->socket->getResource());
-        }
+        return $this->buffer->send($data, $remote);
     }
 
     public function handleRead()
@@ -60,7 +51,7 @@ class Datagram extends EventEmitter
         $this->emit('close', array($this));
 
         $this->pause();
-        $this->outgoing = array();
+        $this->buffer->close();
         $this->socket->close();
 
         $this->removeAllListeners();
