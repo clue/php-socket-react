@@ -1,0 +1,10 @@
+{
+    "name": "clue/sockets-react",
+    "require": {
+        "clue/socket-raw": "dev-master",
+        "evenement/evenement": "1.*",
+        "react/event-loop": "0.2.*",
+        "react/promise": "1.*",
+        "react/stream": "0.2.*"
+    }
+}
