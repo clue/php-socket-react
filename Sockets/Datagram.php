@@ -58,4 +58,18 @@ class Datagram extends EventEmitter
 
         $this->removeAllListeners();
     }
+
+    /**
+     * enable/disable sending and receiving broacasts (by setting/unsetting SO_BROADCAST option)
+     *
+     * @param boolean $toggle
+     * @return self $this (chainable)
+     * @throws Exception on error
+     * @uses RawSocket::setOption()
+     */
+    public function setOptionBroadcast($toggle = true)
+    {
+        $this->socket->setOption(SOL_SOCKET, SO_BROADCAST, (int)(bool)$toggle);
+        return $this;
+    }
 }
