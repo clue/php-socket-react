@@ -3,6 +3,7 @@
 namespace Sockets;
 
 use React\EventLoop\LoopInterface;
+use \Exception;
 
 // modelled closely after React\EventLoop\StreamSelectLoop
 class SelectPoller

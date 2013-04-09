@@ -2,14 +2,19 @@
 
 namespace Sockets;
 
+use Socket\Raw\Socket as RawSocket;
+
 class DatagramBuffer
 {
+    private $socket;
+    private $poller;
+
     private $outgoing = array();
     private $outgoingLength = 0;
 
     private $softLimit = 65536;
 
-    public function __construct(Socket $socket, SelectPoller $poller)
+    public function __construct(RawSocket $socket, SelectPoller $poller)
     {
         $this->socket = $socket;
         $this->poller = $poller;

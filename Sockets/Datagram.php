@@ -2,6 +2,9 @@
 
 namespace Sockets;
 
+use Evenement\EventEmitter;
+use Socket\Raw\Socket as RawSocket;
+
 class Datagram extends EventEmitter
 {
     private $socket;
@@ -9,7 +12,7 @@ class Datagram extends EventEmitter
     private $buffer;
     private $bufferSize = 65536;
 
-    public function __construct(Socket $socket, SelectPoller $poller)
+    public function __construct(RawSocket $socket, SelectPoller $poller)
     {
         $this->socket = $socket;
         $this->poller = $poller;
