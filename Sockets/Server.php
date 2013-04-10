@@ -10,7 +10,11 @@ use Socket\Raw\Socket as RawSocket;
 class Server extends EventEmitter implements ServerInterface
 {
     private $factory;
-    private $socket = false;
+    /**
+     *
+     * @var RawSocket
+     */
+    private $socket = null;
     private $poller;
 
     public function __construct(SelectPoller $poller, RawFactory $factory = null)
@@ -36,6 +40,10 @@ class Server extends EventEmitter implements ServerInterface
             $this->factory = new RawFactory();
         }
         $this->socket = $this->factory->createServer($address);
+        if ($this->socket->getType() !== SOCK_STREAM) {
+            $this->socket->close();
+            throw new Exception('Not a stream address scheme');
+        }
         $this->socket->setBlocking(false);
 
         $that = $this;
