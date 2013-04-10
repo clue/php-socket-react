@@ -20,7 +20,7 @@ class DatagramBuffer
         $this->poller = $poller;
     }
 
-    public function send($data, $remote)
+    public function send($data, $remote = null)
     {
         $this->outgoing []= array($data, $remote);
         $this->outgoingLength += strlen($data);
@@ -36,7 +36,11 @@ class DatagramBuffer
         list($data, $remote) = array_shift($this->outgoing);
         $this->outgoingLength -= strlen($data);
 
-        $this->socket->sendTo($data, 0, $remote);
+        if ($remote === null) {
+            $this->socket->send($data, 0);
+        } else {
+            $this->socket->sendTo($data, 0, $remote);
+        }
 
         if (!$this->outgoing) {
             $this->poller->removeWriteSocket($this->socket->getResource());

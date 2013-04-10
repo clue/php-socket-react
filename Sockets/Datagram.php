@@ -32,7 +32,16 @@ class Datagram extends EventEmitter
         $this->poller->removeReadSocket($this->socket->getResource());
     }
 
-    public function send($data, $remote)
+    /**
+     * send given $data as a datagram message to given $remote address or connect()ed target
+     *
+     * @param string      $data   datagram message to be sent
+     * @param string|null $remote remote/peer address to send message to. can be null if your client socket is connect()ed
+     * @return boolean
+     * @uses DatagramBuffer::send()
+     * @see self::connect()
+     */
+    public function send($data, $remote = null)
     {
         return $this->buffer->send($data, $remote);
     }
