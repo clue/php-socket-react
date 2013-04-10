@@ -1,6 +1,6 @@
 <?php
 
-namespace Sockets;
+namespace Socket\React;
 
 use React\EventLoop\LoopInterface;
 use \Exception;

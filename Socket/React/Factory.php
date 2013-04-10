@@ -1,9 +1,8 @@
 <?php
 
-namespace Sockets;
+namespace Socket\React;
 
 use React\Promise\When;
-
 use React\Promise\Deferred;
 use React\EventLoop\LoopInterface;
 use Socket\Raw\Factory as RawFactory;

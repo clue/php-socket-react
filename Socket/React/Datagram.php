@@ -1,6 +1,6 @@
 <?php
 
-namespace Sockets;
+namespace Socket\React;
 
 use Evenement\EventEmitter;
 use Socket\Raw\Socket as RawSocket;

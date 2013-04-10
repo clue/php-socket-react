@@ -1,6 +1,6 @@
 <?php
 
-namespace Sockets;
+namespace Socket\React;
 
 use React\Stream\WritableStreamInterface;
 use React\Stream\ReadableStreamInterface;
