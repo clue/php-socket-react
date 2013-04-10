@@ -24,6 +24,11 @@ class Server extends EventEmitter implements ServerInterface
         // TODO: IPv6? UNIX?
         $address = $host . ':' . $port;
 
+        return $this->listenAddress($address);
+    }
+
+    public function listenAddress($address)
+    {
         if ($this->factory === null) {
             $this->factory = new RawFactory();
         }
