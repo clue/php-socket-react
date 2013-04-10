@@ -105,7 +105,8 @@ class SelectPoller
                 }
             }
         } else if ($ret === false) {
-            throw new Exception('Socket operation "socket_select()" failed: ' . socket_strerror(socket_last_error()));
+            $error = error_get_last();
+            throw new Exception('Socket operation "socket_select()" failed: ' . $error['message']);
         }
     }
 
