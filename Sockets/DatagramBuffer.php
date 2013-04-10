@@ -26,6 +26,7 @@ class DatagramBuffer
         $this->outgoingLength += strlen($data);
 
         $this->poller->addWriteSocket($this->socket->getResource(), array($this, 'handleWrite'));
+        $this->poller->notify();
 
         return ($this->outgoingLength < $this->softLimit);
     }

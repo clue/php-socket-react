@@ -52,6 +52,25 @@ class SelectPoller
         return ($this->pollDurationSec + $this->pollDurationUsec / 1000000);
     }
 
+
+    /**
+     * notify poller to schedule polling ASAP for next tick
+     *
+     * this doesn't neccessary have to actually do anything (and in fact
+     * it does NOT at the moment...), but it's purpose is to notify the
+     * main loop that something in this poller instance has (likely) changed
+     * and polling should be performed ASAP. This could re-schedule the
+     * timer to poll in the next available tick instead of waiting for the
+     * timer to expire.
+     *
+     * @return self $this (chainable)
+     * @todo actually do something. this is a no-op currently
+     */
+    public function notify()
+    {
+        return $this;
+    }
+
     public function resume()
     {
         if ($this->tid === null && ($this->read || $this->write)) {
