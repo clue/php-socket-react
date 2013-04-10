@@ -26,20 +26,64 @@ class Factory
      *
      * @param string $address
      * @return PromiseInterface to return a \Sockets\Stream
-     * @throws Exception on error
-     * @uses RawFactory::createClient()
+     * @uses RawFactory::createFromString()
+     * @uses RawSocket::setBlocking() to turn on non-blocking mode
+     * @uses RawSocket::connect() to initiate async connection
+     * @uses SelectPoller::addWriteSocket() to wait for connection result once
+     * @uses RawSocket::assertAlive() to check connection result
      */
     public function createClient($address)
     {
-        $factory = $this->rawFactory;
         $that = $this;
-        return $this->resolve($address)->then(function ($address) use ($factory, $that) {
-            $socket = $factory->createClient($address);
+        $factory = $this->rawFactory;
+
+        return $this->resolve($address)->then(function ($address) use ($factory, $that){
+            $deferred = new Deferred();
+
+            $socket = $factory->createFromString($address, $scheme);
             if ($socket->getType() !== SOCK_STREAM) {
                 $socket->close();
                 throw new Exception('Not a stream address scheme');
             }
-            return new Stream($socket, $that->getPoller());
+
+            $socket->setBlocking(false);
+
+            try{
+                // socket is nonblocking, so connect should emit EINPROGRESS
+                $socket->connect($address);
+
+                // socket is already connected immediately?
+                $deferred->resolve(new Stream($socket, $that->getPoller()));
+            }
+            catch(Exception $exception)
+            {
+                if ($exception->getCode() === SOCKET_EINPROGRESS) {
+                    // connection in progress => wait for the socket to become writable
+                    $that->getPoller()->addWriteSocket($socket->getResource(), function ($resource, $poller) use ($deferred, $socket){
+                        // only poll for writable event once
+                        $poller->removeWriteSocket($resource);
+
+                        try {
+                            // assert that socket error is 0 (no TCP RST received)
+                            $socket->assertAlive();
+                        }
+                        catch (Exception $e) {
+                            // error returned => connected failed
+                            $socket->close();
+
+                            $deferred->reject(new Exception('Error while establishing connection' , $e->getCode(), $e));
+                        }
+
+                        // no error => connection established
+                        $deferred->resolve(new Stream($socket, $poller));
+                    });
+                } else {
+                    // re-throw any other socket error
+                    $socket->close();
+                    $deferred->reject($exception);
+                }
+            }
+            return $deferred->promise();
         });
     }
 
