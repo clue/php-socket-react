@@ -1,5 +1,7 @@
 {
-    "name": "clue/sockets-react",
+    "name": "clue/socket-react",
+    "homepage": "https://github.com/clue/socket-react",
+    "license": "MIT",
     "require": {
         "clue/socket-raw": "dev-master",
         "evenement/evenement": "1.*",
@@ -7,5 +9,8 @@
         "react/promise": "1.*",
         "react/stream": "0.2.*",
         "react/socket": "0.2.*"
+    },
+    "autoload": {
+        "psr-0": {"Socket": ""}
     }
 }
