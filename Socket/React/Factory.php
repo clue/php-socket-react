@@ -71,6 +71,7 @@ class Factory
                             $socket->close();
 
                             $deferred->reject(new Exception('Error while establishing connection' , $e->getCode(), $e));
+                            return;
                         }
 
                         // no error => connection established
