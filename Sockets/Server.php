@@ -21,8 +21,11 @@ class Server extends EventEmitter implements ServerInterface
 
     public function listen($port, $host = '127.0.0.1')
     {
-        // TODO: IPv6? UNIX?
-        $address = $host . ':' . $port;
+        if (strpos($host, ':') !== false) {
+            // IPv6 addressing has to use square brackets
+            $host = '[' . $host . ']';
+        }
+        $address = 'tcp://' . $host . ':' . $port;
 
         return $this->listenAddress($address);
     }
