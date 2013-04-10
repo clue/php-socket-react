@@ -4,6 +4,7 @@ namespace Socket\React;
 
 use React\Stream\WritableStreamInterface;
 use React\Stream\ReadableStreamInterface;
+use React\Stream\Util;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
 use Socket\Raw\Socket as RawSocket;
@@ -15,12 +16,27 @@ class Stream extends EventEmitter implements ReadableStreamInterface, WritableSt
 
     private $bufferSize = 65536;
 
+    protected $readable = true;
+    protected $writable = true;
+    protected $closing = false;
+
     public function __construct(RawSocket $socket, SelectPoller $poller)
     {
         $this->socket = $socket;
         $this->poller = $poller;
 
         $this->buffer = new StreamBuffer($socket, $poller);
+
+        $that = $this;
+
+        $this->buffer->on('error', function ($error) use ($that) {
+            $that->emit('error', array($error, $that));
+            $that->close();
+        });
+
+        $this->buffer->on('drain', function () use ($that) {
+            $that->emit('drain');
+        });
 
         $this->resume();
     }
@@ -47,11 +63,24 @@ class Stream extends EventEmitter implements ReadableStreamInterface, WritableSt
 
     public function write($data)
     {
+        if (!$this->writable) {
+            return;
+        }
+
         return $this->buffer->write($data);
     }
 
     public function close()
     {
+        if (!$this->writable && !$this->closing) {
+            return;
+        }
+
+        $this->closing = false;
+
+        $this->readable = false;
+        $this->writable = false;
+
         $this->emit('end', array($this));
         $this->emit('close', array($this));
 
@@ -64,6 +93,10 @@ class Stream extends EventEmitter implements ReadableStreamInterface, WritableSt
 
     public function end($data = null)
     {
+        if (!$this->writable) {
+            return;
+        }
+
         $that = $this;
         $this->buffer->on('close', function() use ($that) {
             $that->close();
@@ -71,9 +104,11 @@ class Stream extends EventEmitter implements ReadableStreamInterface, WritableSt
         $this->buffer->end($data);
     }
 
-    public function pipe($dest, array $options = array())
+    public function pipe(WritableStreamInterface $dest, array $options = array())
     {
+        Util::pipe($this, $dest, $options);
 
+        return $dest;
     }
 
     public function handleData()
