@@ -4,17 +4,19 @@ namespace Sockets;
 
 use React\Socket\ServerInterface;
 use Evenement\EventEmitter;
+use Socket\Raw\Factory as RawFactory;
 use Socket\Raw\Socket as RawSocket;
 
 class Server extends EventEmitter implements ServerInterface
 {
-    private $socket;
+    private $factory;
+    private $socket = false;
     private $poller;
 
-    public function __construct(RawSocket $socket, SelectPoller $poller)
+    public function __construct(SelectPoller $poller, RawFactory $factory = null)
     {
-        $this->socket = $socket;
         $this->poller = $poller;
+        $this->factory = $factory;
     }
 
     public function listen($port, $host = '127.0.0.1')
@@ -22,8 +24,10 @@ class Server extends EventEmitter implements ServerInterface
         // TODO: IPv6? UNIX?
         $address = $host . ':' . $port;
 
-        $this->socket->bind($address);
-        $this->socket->listen();
+        if ($this->factory === null) {
+            $this->factory = new RawFactory();
+        }
+        $this->socket = $this->factory->createServer($address);
         $this->socket->setBlocking(false);
 
         $that = $this;
