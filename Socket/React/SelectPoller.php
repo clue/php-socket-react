@@ -73,7 +73,7 @@ class SelectPoller
 
     public function resume()
     {
-        if ($this->tid === null && ($this->read || $this->write)) {
+        if ($this->tid === null && ($this->readSockets || $this->writeSockets)) {
             $this->tid = $this->loop->addPeriodicTimer($this->pollInterval, array($this, 'poll'));
         }
     }
@@ -88,8 +88,8 @@ class SelectPoller
 
     public function poll()
     {
-        $read = $this->readSockets ? $this->readSockets : null;
-        $write = $this->writeSockets ? $this->writeSockets : null;
+        $read = $this->readSockets ? $this->readSockets : array();
+        $write = $this->writeSockets ? $this->writeSockets : array();
         $ret = socket_select($read, $write, $x = null, $this->pollDurationSec, $this->pollDurationUsec);
         if ($ret) {
             foreach ($read as $socket) {
