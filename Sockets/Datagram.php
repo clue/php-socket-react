@@ -48,7 +48,7 @@ class Datagram extends EventEmitter
 
     public function handleRead()
     {
-        $data = $this->socket->rcvFrom($this->bufferSize, 0, $remote = null);
+        $data = $this->socket->recvFrom($this->bufferSize, 0, $remote);
 
         if ($data === '') {
             $this->close();
