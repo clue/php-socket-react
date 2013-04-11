@@ -1,7 +1,8 @@
 <?php
 
-namespace Socket\React;
+namespace Socket\React\Stream;
 
+use Socket\React\SelectPoller;
 use React\Stream\WritableStreamInterface;
 use React\Stream\ReadableStreamInterface;
 use React\Stream\Util;

@@ -1,6 +1,8 @@
 <?php
 
-namespace Socket\React;
+namespace Socket\React\Stream;
+
+use Socket\React\SelectPoller;
 
 use React\Promise\When;
 use React\Promise\Deferred;
@@ -103,21 +105,6 @@ class Factory
 
             return $server;
         });
-    }
-
-    public function createUdp4()
-    {
-        return new Datagram($this->rawFactory->createUdp4(), $this->getPoller());
-    }
-
-    public function createUdp6()
-    {
-        return new Datagram($this->rawFactory->createUdp6(), $this->getPoller());
-    }
-
-    public function createUdg()
-    {
-        return new Datagram($this->rawFactory->createUdg(), $this->getPoller());
     }
 
     /**

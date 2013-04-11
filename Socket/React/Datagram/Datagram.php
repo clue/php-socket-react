@@ -1,7 +1,8 @@
 <?php
 
-namespace Socket\React;
+namespace Socket\React\Datagram;
 
+use Socket\React\SelectPoller;
 use Evenement\EventEmitter;
 use Socket\Raw\Socket as RawSocket;
 
