@@ -1,0 +1,125 @@
+<?php
+
+namespace Socket\React\Datagram;
+
+use Socket\React\SelectPoller;
+use React\Promise\When;
+use React\Promise\Deferred;
+use React\EventLoop\LoopInterface;
+use Socket\Raw\Factory as RawFactory;
+use \Exception;
+
+class Factory
+{
+    private $loop;
+    private $rawFactory;
+    private $poller = null;
+
+    public function __construct(LoopInterface $loop)
+    {
+        $this->loop = $loop;
+        $this->rawFactory = new RawFactory();
+    }
+
+    /**
+     * create datagram client socket connected to given address
+     *
+     * @param string $address
+     * @return PromiseInterface to return a \Socket\React\Datagram\Datagram
+     * @uses RawFactory::createFromString()
+     * @uses RawSocket::setBlocking() to turn on non-blocking mode
+     * @uses RawSocket::connect() to initiate connection
+     * @see \Socket\React\Datagram\Datagram::connect()
+     */
+    public function createClient($address)
+    {
+        $that = $this;
+        $factory = $this->rawFactory;
+
+        return $this->resolve($address)->then(function ($address) use ($factory, $that){
+            $scheme = 'udp';
+            $socket = $factory->createFromString($address, $scheme);
+            if ($socket->getType() !== SOCK_DGRAM) {
+                $socket->close();
+                throw new Exception('Not a datagram address scheme');
+            }
+
+            $socket->setBlocking(false);
+            $socket->connect($address);
+
+            return new Datagram($socket, $that->getPoller());
+        });
+    }
+
+    /**
+     * create datagram server socket waiting for incoming messages on the given address
+     *
+     * @param string $address
+     * @return PromiseInterface to return a \Socket\React\Datagram\Datagram
+     * @uses RawFactory::createFromString()
+     * @uses RawSocket::setBlocking() to turn on non-blocking mode
+     * @uses RawSocket::bind() to initiate connection
+     */
+    public function createServer($address)
+    {
+        $that = $this;
+        $factory = $this->rawFactory;
+
+        return $this->resolve($address)->then(function ($address) use ($factory, $that){
+            $scheme = 'udp';
+            $socket = $factory->createFromString($address, $scheme);
+            if ($socket->getType() !== SOCK_DGRAM) {
+                $socket->close();
+                throw new Exception('Not a datagram address scheme');
+            }
+
+            $socket->setBlocking(false);
+            $socket->bind($address);
+
+            return new Datagram($socket, $that->getPoller());
+        });
+    }
+
+    public function createUdp4()
+    {
+        return new Datagram($this->rawFactory->createUdp4(), $this->getPoller());
+    }
+
+    public function createUdp6()
+    {
+        return new Datagram($this->rawFactory->createUdp6(), $this->getPoller());
+    }
+
+    public function createUdg()
+    {
+        return new Datagram($this->rawFactory->createUdg(), $this->getPoller());
+    }
+
+    /**
+     *
+     * @return SelectPoller
+     */
+    public function getPoller()
+    {
+        if ($this->poller === null) {
+            $this->poller = new SelectPoller($this->loop);
+        }
+        return $this->poller;
+    }
+
+    /**
+     * resolve given address via DNS if applicable
+     *
+     * Letting host names pass through will not break things, but it
+     * requires a blocking resolution afterwards. So make sure to try to
+     * resolve hostnames here.
+     *
+     * @param string $address
+     * @return PromiseInterface
+     * @todo use Resolver to perform async resolving
+     */
+    private function resolve($address)
+    {
+        return When::resolve($address);
+    }
+}
