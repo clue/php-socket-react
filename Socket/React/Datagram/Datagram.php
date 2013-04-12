@@ -5,6 +5,7 @@ namespace Socket\React\Datagram;
 use Socket\React\SelectPoller;
 use Evenement\EventEmitter;
 use Socket\Raw\Socket as RawSocket;
+use \Exception;
 
 class Datagram extends EventEmitter
 {
@@ -49,7 +50,13 @@ class Datagram extends EventEmitter
 
     public function handleRead()
     {
-        $data = $this->socket->recvFrom($this->bufferSize, 0, $remote);
+        try {
+            $data = $this->socket->recvFrom($this->bufferSize, 0, $remote);
+        }
+        catch (Exception $e) {
+            $this->emit('error', array($e, $this));
+            return;
+        }
 
         if ($data === '') {
             $this->close();
