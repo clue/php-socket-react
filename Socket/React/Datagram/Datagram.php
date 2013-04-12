@@ -58,11 +58,7 @@ class Datagram extends EventEmitter
             return;
         }
 
-        if ($data === '') {
-            $this->close();
-        } else {
-            $this->emit('message', array($data, $remote));
-        }
+        $this->emit('message', array($data, $remote));
     }
 
     public function close()
