@@ -67,8 +67,7 @@ class Server extends EventEmitter implements ServerInterface
 
     protected function createConnection(RawSocket $clientSocket)
     {
-        // TODO: return Connection in order to provide getRemoteAddress()
-        return new Stream($clentSocket, $this->poller);
+        return new Connection($clentSocket, $this->poller);
     }
 
     public function getPort()

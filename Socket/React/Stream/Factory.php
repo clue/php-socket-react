@@ -54,7 +54,7 @@ class Factory
                 $socket->connect($address);
 
                 // socket is already connected immediately?
-                $deferred->resolve(new Stream($socket, $that->getPoller()));
+                $deferred->resolve(new Connection($socket, $that->getPoller()));
             }
             catch(Exception $exception)
             {
@@ -77,7 +77,7 @@ class Factory
                         }
 
                         // no error => connection established
-                        $deferred->resolve(new Stream($socket, $poller));
+                        $deferred->resolve(new Connection($socket, $poller));
                     });
                 } else {
                     // re-throw any other socket error

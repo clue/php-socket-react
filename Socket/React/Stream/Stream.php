@@ -12,7 +12,11 @@ use Socket\Raw\Socket as RawSocket;
 
 class Stream extends EventEmitter implements ReadableStreamInterface, WritableStreamInterface
 {
-    private $socket;
+    /**
+     *
+     * @var RawSocket
+     */
+    protected $socket;
     private $poller;
 
     private $bufferSize = 65536;
