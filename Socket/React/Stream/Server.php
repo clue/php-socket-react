@@ -79,6 +79,8 @@ class Server extends EventEmitter implements ServerInterface
     public function shutdown()
     {
         $this->poller->removeReadSocket($this->socket->getResource());
+
+        $this->socket->shutdown();
         $this->socket->close();
     }
 }

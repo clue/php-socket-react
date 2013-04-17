@@ -91,6 +91,8 @@ class Stream extends EventEmitter implements ReadableStreamInterface, WritableSt
 
         $this->pause();
         $this->buffer->close();
+
+        $this->socket->shutdown();
         $this->socket->close();
 
         $this->removeAllListeners();

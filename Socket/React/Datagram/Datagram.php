@@ -67,6 +67,12 @@ class Datagram extends EventEmitter
 
         $this->pause();
         $this->buffer->close();
+
+        try {
+            $this->socket->shutdown();
+        }
+        catch (Exception $ignore) {
+        }
         $this->socket->close();
 
         $this->removeAllListeners();
