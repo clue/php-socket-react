@@ -2,11 +2,13 @@
 
 namespace Socket\React\Datagram;
 
+
 use Socket\React\SelectPoller;
 use React\Promise\When;
 use React\Promise\Deferred;
 use React\EventLoop\LoopInterface;
 use Socket\Raw\Factory as RawFactory;
+use Socket\Raw\Socket as RawSocket;
 use \Exception;
 
 class Factory
@@ -93,6 +95,21 @@ class Factory
     public function createUdg()
     {
         return new Datagram($this->rawFactory->createUdg(), $this->getPoller());
+    }
+
+    public function createIcmp4()
+    {
+        return $this->createFromRaw($this->rawFactory->createIcmp4());
+    }
+
+    public function createIcmp6()
+    {
+        return $this->createFromRaw($this->rawFactory->createIcmp4());
+    }
+
+    public function createFromRaw(RawSocket $rawSocket)
+    {
+        return new Datagram($rawSocket, $this->getPoller());
     }
 
     /**
