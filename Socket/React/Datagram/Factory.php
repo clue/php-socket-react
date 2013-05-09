@@ -49,7 +49,7 @@ class Factory
             $socket->setBlocking(false);
             $socket->connect($address);
 
-            return new Datagram($socket, $that->getPoller());
+            return $that->createFromRaw($socket);
         });
     }
 
@@ -78,23 +78,23 @@ class Factory
             $socket->setBlocking(false);
             $socket->bind($address);
 
-            return new Datagram($socket, $that->getPoller());
+            return $that->createFromRaw($socket);
         });
     }
 
     public function createUdp4()
     {
-        return new Datagram($this->rawFactory->createUdp4(), $this->getPoller());
+        return $this->createFromRaw($this->rawFactory->createUdp4());
     }
 
     public function createUdp6()
     {
-        return new Datagram($this->rawFactory->createUdp6(), $this->getPoller());
+        return $this->createFromRaw($this->rawFactory->createUdp6());
     }
 
     public function createUdg()
     {
-        return new Datagram($this->rawFactory->createUdg(), $this->getPoller());
+        return $this->createFromRaw($this->rawFactory->createUdg());
     }
 
     public function createIcmp4()
