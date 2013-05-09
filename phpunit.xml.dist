@@ -11,6 +11,11 @@
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist>
+            <directory>./Socket/</directory>
+        </whitelist>
+    </filter>
     <!--<logging>
         <log type="coverage-clover" target="./build/clover.xml"/>
     </logging>-->
