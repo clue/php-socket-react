@@ -90,7 +90,7 @@ class SelectPoller
     {
         $read = $this->readSockets ? $this->readSockets : array();
         $write = $this->writeSockets ? $this->writeSockets : array();
-        $ret = socket_select($read, $write, $x = null, $this->pollDurationSec, $this->pollDurationUsec);
+        $ret = socket_select($read, $write, $x, $this->pollDurationSec, $this->pollDurationUsec);
         if ($ret) {
             foreach ($read as $socket) {
                 $id = (int)$socket;
