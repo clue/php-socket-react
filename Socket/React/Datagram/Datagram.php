@@ -5,9 +5,10 @@ namespace Socket\React\Datagram;
 use Socket\React\SelectPoller;
 use Evenement\EventEmitter;
 use Socket\Raw\Socket as RawSocket;
+use Datagram\SocketInterface;
 use \Exception;
 
-class Datagram extends EventEmitter
+class Datagram extends EventEmitter implements SocketInterface
 {
     private $socket;
     private $poller;
@@ -58,7 +59,7 @@ class Datagram extends EventEmitter
             return;
         }
 
-        $this->emit('message', array($data, $remote));
+        $this->emit('message', array($data, $remote, $this));
     }
 
     public function close()
