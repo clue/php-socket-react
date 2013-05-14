@@ -25,26 +25,51 @@ class Factory
     }
 
     /**
-     * create datagram client socket connected to given address
+     * Create datagram client socket connect()ed to given remote address
+     *
+     * Please note that unlike streaming sockets (TCP/IP),
+     * datagram sockets usually have no concept of an
+     * "established connection", i.e. the remote side will NOT be notified
+     * of any "connection attempt" and no data has to be exchanged.
+     *
+     * Usually, there's no /need/ to connect() datagram sockets. If you
+     * want to send to a specific remote address, see the $remote parameter
+     * in send() as an alternative. Connect()ing the datagram client to
+     * the remote side once may be preferrable as it frees you from having
+     * to pass the remote address along with every send() call and only
+     * requires a single host name resolution instead of having to perform
+     * it with every send() call.
      *
      * @param string $address
+     * @param array  $context (optional) "bindto" or "broadcast" context options
      * @return PromiseInterface to return a \Socket\React\Datagram\Datagram
      * @uses RawFactory::createFromString()
+     * @uses RawSocket::setOption() to toggle broadcast option
+     * @uses RawSocket::bind() to bind to given local address
      * @uses RawSocket::setBlocking() to turn on non-blocking mode
      * @uses RawSocket::connect() to initiate connection
-     * @see \Socket\React\Datagram\Datagram::connect()
+     * @todo consider adding additional socket options
+     * @todo use async DNS resolver for "bindto" context
      */
-    public function createClient($address)
+    public function createClient($address, $context = array())
     {
         $that = $this;
         $factory = $this->rawFactory;
 
-        return $this->resolve($address)->then(function ($address) use ($factory, $that){
+        return $this->resolve($address)->then(function ($address) use ($factory, $that, $context){
             $scheme = 'udp';
             $socket = $factory->createFromString($address, $scheme);
             if ($socket->getType() !== SOCK_DGRAM) {
                 $socket->close();
                 throw new Exception('Not a datagram address scheme');
+            }
+
+            if (isset($context['broadcast']) && $context['broadcast']) {
+                $socket->setOption(SOL_SOCKET, SO_BROADCAST, 1);
+            }
+
+            if (isset($context['bindto'])) {
+                $socket->bind($context['bindto']);
             }
 
             $socket->setBlocking(false);
@@ -55,25 +80,30 @@ class Factory
     }
 
     /**
-     * create datagram server socket waiting for incoming messages on the given address
+     * create datagram server socket waiting for incoming messages on the given local address
      *
      * @param string $address
+     * @param array  $context (optional) "broadcast" context option
      * @return PromiseInterface to return a \Socket\React\Datagram\Datagram
      * @uses RawFactory::createFromString()
      * @uses RawSocket::setBlocking() to turn on non-blocking mode
      * @uses RawSocket::bind() to initiate connection
      */
-    public function createServer($address)
+    public function createServer($address, $context = array())
     {
         $that = $this;
         $factory = $this->rawFactory;
 
-        return $this->resolve($address)->then(function ($address) use ($factory, $that){
+        return $this->resolve($address)->then(function ($address) use ($factory, $that, $context){
             $scheme = 'udp';
             $socket = $factory->createFromString($address, $scheme);
             if ($socket->getType() !== SOCK_DGRAM) {
                 $socket->close();
                 throw new Exception('Not a datagram address scheme');
+            }
+
+            if (isset($context['broadcast']) && $context['broadcast']) {
+                $socket->setOption(SOL_SOCKET, SO_BROADCAST, 1);
             }
 
             $socket->setBlocking(false);
