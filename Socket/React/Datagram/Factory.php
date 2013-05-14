@@ -110,7 +110,7 @@ class Factory
 
     public function createFromRaw(RawSocket $rawSocket)
     {
-        return new Datagram($rawSocket, $this->getSocketLoop());
+        return new Socket($rawSocket, $this->getSocketLoop());
     }
 
     /**

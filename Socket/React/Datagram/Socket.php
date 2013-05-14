@@ -8,7 +8,7 @@ use Socket\Raw\Socket as RawSocket;
 use Datagram\SocketInterface;
 use \Exception;
 
-class Datagram extends EventEmitter implements SocketInterface
+class Socket extends EventEmitter implements SocketInterface
 {
     private $socket;
     private $loop;

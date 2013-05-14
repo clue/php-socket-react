@@ -45,7 +45,7 @@ class DatagramFactoryTest extends TestCase
 
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
-        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Datagram'), $this->expectCallableNever());
+        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Socket'), $this->expectCallableNever());
 
         $this->loop->tick();
     }
@@ -56,7 +56,7 @@ class DatagramFactoryTest extends TestCase
 
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
-        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Datagram'), $this->expectCallableNever());
+        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Socket'), $this->expectCallableNever());
 
         $this->loop->tick();
     }
@@ -70,7 +70,7 @@ class DatagramFactoryTest extends TestCase
 
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
-        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Datagram'), $this->expectCallableNever());
+        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Socket'), $this->expectCallableNever());
 
         $this->loop->tick();
     }
@@ -95,7 +95,7 @@ class DatagramFactoryTest extends TestCase
 
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
-        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Datagram'), $this->expectCallableNever());
+        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Socket'), $this->expectCallableNever());
 
         $this->loop->tick();
     }
@@ -106,7 +106,7 @@ class DatagramFactoryTest extends TestCase
 
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
-        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Datagram'), $this->expectCallableNever());
+        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Socket'), $this->expectCallableNever());
 
         $this->loop->tick();
     }
@@ -120,7 +120,7 @@ class DatagramFactoryTest extends TestCase
 
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
-        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Datagram'), $this->expectCallableNever());
+        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Socket'), $this->expectCallableNever());
 
         $this->loop->tick();
     }
@@ -143,7 +143,7 @@ class DatagramFactoryTest extends TestCase
     {
         $socket = $this->factory->createUdp4();
 
-        $this->assertInstanceOf('Socket\React\Datagram\Datagram', $socket);
+        $this->assertInstanceOf('Socket\React\Datagram\Socket', $socket);
     }
 
     /**
@@ -153,7 +153,7 @@ class DatagramFactoryTest extends TestCase
     {
         $socket = $this->factory->createUdp6();
 
-        $this->assertInstanceOf('Socket\React\Datagram\Datagram', $socket);
+        $this->assertInstanceOf('Socket\React\Datagram\Socket', $socket);
     }
 
     /**
@@ -163,7 +163,7 @@ class DatagramFactoryTest extends TestCase
     {
         $socket = $this->factory->createUdg();
 
-        $this->assertInstanceOf('Socket\React\Datagram\Datagram', $socket);
+        $this->assertInstanceOf('Socket\React\Datagram\Socket', $socket);
     }
 
     public function testCreateIcmp4()
@@ -179,7 +179,7 @@ class DatagramFactoryTest extends TestCase
             throw $e;
         }
 
-        $this->assertInstanceOf('Socket\React\Datagram\Datagram', $socket);
+        $this->assertInstanceOf('Socket\React\Datagram\Socket', $socket);
     }
 
     /**
@@ -198,6 +198,6 @@ class DatagramFactoryTest extends TestCase
             throw $e;
         }
 
-        $this->assertInstanceOf('Socket\React\Datagram\Datagram', $socket);
+        $this->assertInstanceOf('Socket\React\Datagram\Socket', $socket);
     }
 }
