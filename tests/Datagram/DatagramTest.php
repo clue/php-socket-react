@@ -1,11 +1,11 @@
 <?php
 
 use Socket\React\Datagram\Datagram;
-
 use Socket\React\Datagram\Factory;
 
-class DatagramDatagramTest extends TestCase{
-/**
+class DatagramDatagramTest extends TestCase
+{
+    /**
      * @var Socket\Raw\Factory
      * @type Factory
      */

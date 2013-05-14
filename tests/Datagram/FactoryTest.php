@@ -2,8 +2,9 @@
 
 use Socket\React\Datagram\Factory;
 
-class DatagramFactoryTest extends TestCase{
-/**
+class DatagramFactoryTest extends TestCase
+{
+    /**
      * @var Socket\Raw\Factory
      * @type Factory
      */
