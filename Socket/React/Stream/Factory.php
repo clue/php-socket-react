@@ -2,6 +2,7 @@
 
 namespace Socket\React\Stream;
 
+use React\EventLoop\StreamSelectLoop;
 use Socket\React\EventLoop\SelectPoller;
 use React\Promise\When;
 use React\Promise\Deferred;
@@ -13,7 +14,7 @@ class Factory
 {
     private $loop;
     private $rawFactory;
-    private $poller = null;
+    private $socketLoop = null;
 
     public function __construct(LoopInterface $loop)
     {
@@ -29,7 +30,7 @@ class Factory
      * @uses RawFactory::createFromString()
      * @uses RawSocket::setBlocking() to turn on non-blocking mode
      * @uses RawSocket::connect() to initiate async connection
-     * @uses SelectPoller::addWriteSocket() to wait for connection result once
+     * @uses LoopInterface::addWriteStream() to wait for connection result once
      * @uses RawSocket::assertAlive() to check connection result
      */
     public function createClient($address)
@@ -53,15 +54,15 @@ class Factory
                 $socket->connect($address);
 
                 // socket is already connected immediately?
-                $deferred->resolve(new Connection($socket, $that->getPoller()));
+                $deferred->resolve(new Connection($socket, $that->getSocketLoop()));
             }
             catch(Exception $exception)
             {
                 if ($exception->getCode() === SOCKET_EINPROGRESS) {
                     // connection in progress => wait for the socket to become writable
-                    $that->getPoller()->addWriteSocket($socket->getResource(), function ($resource, $poller) use ($deferred, $socket){
+                    $that->getSocketLoop()->addWriteStream($socket->getResource(), function ($resource, $loop) use ($deferred, $socket){
                         // only poll for writable event once
-                        $poller->removeWriteSocket($resource);
+                        $loop->removeWriteStream($resource);
 
                         try {
                             // assert that socket error is 0 (no TCP RST received)
@@ -76,7 +77,7 @@ class Factory
                         }
 
                         // no error => connection established
-                        $deferred->resolve(new Connection($socket, $poller));
+                        $deferred->resolve(new Connection($socket, $loop));
                     });
                 } else {
                     // re-throw any other socket error
@@ -99,7 +100,7 @@ class Factory
     public function createServer($address)
     {
         return $this->resolve($address)->then(function ($address) {
-            $server = new Server($this->getPoller(), $this->rawFactory);
+            $server = new Server($this->getSocketLoop(), $this->rawFactory);
             $server->listenAddress($address);
 
             return $server;
@@ -107,15 +108,20 @@ class Factory
     }
 
     /**
+     * return a loop interface that supports adding socket resources
      *
-     * @return SelectPoller
+     * @return LoopInterface
      */
-    public function getPoller()
+    public function getSocketLoop()
     {
-        if ($this->poller === null) {
-            $this->poller = new SelectPoller($this->loop);
+        if ($this->socketLoop === null) {
+            if ($this->loop instanceof StreamSelectLoop) {
+                $this->socketLoop = new SelectPoller($this->loop);
+            } else {
+                $this->socketLoop = $this->loop;
+            }
         }
-        return $this->poller;
+        return $this->socketLoop;
     }
 
     /**

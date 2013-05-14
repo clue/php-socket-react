@@ -3,6 +3,7 @@
 namespace Socket\React\Datagram;
 
 
+use React\EventLoop\StreamSelectLoop;
 use Socket\React\EventLoop\SelectPoller;
 use React\Promise\When;
 use React\Promise\Deferred;
@@ -14,8 +15,8 @@ use \Exception;
 class Factory
 {
     private $loop;
+    private $socketLoop = null;
     private $rawFactory;
-    private $poller = null;
 
     public function __construct(LoopInterface $loop)
     {
@@ -109,19 +110,24 @@ class Factory
 
     public function createFromRaw(RawSocket $rawSocket)
     {
-        return new Datagram($rawSocket, $this->getPoller());
+        return new Datagram($rawSocket, $this->getSocketLoop());
     }
 
     /**
+     * return a loop interface that supports adding socket resources
      *
-     * @return SelectPoller
+     * @return LoopInterface
      */
-    public function getPoller()
+    protected function getSocketLoop()
     {
-        if ($this->poller === null) {
-            $this->poller = new SelectPoller($this->loop);
+        if ($this->socketLoop === null) {
+            if ($this->loop instanceof StreamSelectLoop) {
+                $this->socketLoop = new SelectPoller($this->loop);
+            } else {
+                $this->socketLoop = $this->loop;
+            }
         }
-        return $this->poller;
+        return $this->socketLoop;
     }
 
     /**

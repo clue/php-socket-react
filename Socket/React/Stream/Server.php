@@ -2,7 +2,7 @@
 
 namespace Socket\React\Stream;
 
-use Socket\React\EventLoop\SelectPoller;
+use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 use Evenement\EventEmitter;
 use Socket\Raw\Factory as RawFactory;
@@ -16,11 +16,11 @@ class Server extends EventEmitter implements ServerInterface
      * @var RawSocket
      */
     private $socket = null;
-    private $poller;
+    private $loop;
 
-    public function __construct(SelectPoller $poller, RawFactory $factory = null)
+    public function __construct(LoopInterface $loop, RawFactory $factory = null)
     {
-        $this->poller = $poller;
+        $this->loop = $loop;
         $this->factory = $factory;
     }
 
@@ -49,7 +49,7 @@ class Server extends EventEmitter implements ServerInterface
 
         $that = $this;
         $socket = $this->socket;
-        $this->poller->addReadSocket($this->socket->getResource(), function() use ($socket, $that) {
+        $this->loop->addReadStream($this->socket->getResource(), function() use ($socket, $that) {
             $clientSocket = $socket->accept();
 
             $that->handleConnection($clientSocket);
@@ -67,7 +67,7 @@ class Server extends EventEmitter implements ServerInterface
 
     protected function createConnection(RawSocket $clientSocket)
     {
-        return new Connection($clentSocket, $this->poller);
+        return new Connection($clentSocket, $this->loop);
     }
 
     public function getPort()
@@ -78,7 +78,7 @@ class Server extends EventEmitter implements ServerInterface
 
     public function shutdown()
     {
-        $this->poller->removeReadSocket($this->socket->getResource());
+        $this->loop->removeReadStream($this->socket->getResource());
 
         $this->socket->shutdown();
         $this->socket->close();

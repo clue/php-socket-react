@@ -2,7 +2,6 @@
 
 namespace Socket\React\Stream;
 
-use Socket\React\EventLoop\SelectPoller;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
 use React\Stream\WritableStreamInterface;
@@ -13,7 +12,7 @@ use Socket\Raw\Socket as RawSocket;
 class StreamBuffer extends EventEmitter implements WritableStreamInterface
 {
     private $socket;
-    private $poller;
+    private $loop;
 
     public $listening = false;
     public $softLimit = 2048;
@@ -26,10 +25,10 @@ class StreamBuffer extends EventEmitter implements WritableStreamInterface
         'line'    => 0,
     );
 
-    public function __construct(RawSocket $socket, SelectPoller $poller)
+    public function __construct(RawSocket $socket, LoopInterface $loop)
     {
         $this->socket = $socket;
-        $this->poller = $poller;
+        $this->loop   = $loop;
     }
 
     public function isWritable()
@@ -48,7 +47,7 @@ class StreamBuffer extends EventEmitter implements WritableStreamInterface
         if (!$this->listening) {
             $this->listening = true;
 
-            $this->poller->addWriteSocket($this->socket->getResource(), array($this, 'handleWrite'));
+            $this->loop->addWriteStream($this->socket->getResource(), array($this, 'handleWrite'));
         }
 
         $belowSoftLimit = strlen($this->data) < $this->softLimit;
@@ -105,7 +104,7 @@ class StreamBuffer extends EventEmitter implements WritableStreamInterface
         $this->data = (string) substr($this->data, $sent);
 
         if (0 === strlen($this->data)) {
-            $this->poller->removeWriteSocket($this->socket->getResource());
+            $this->loop->removeWriteStream($this->socket->getResource());
             $this->listening = false;
 
             $this->emit('full-drain');

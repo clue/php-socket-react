@@ -2,7 +2,7 @@
 
 namespace Socket\React\Datagram;
 
-use Socket\React\EventLoop\SelectPoller;
+use React\EventLoop\LoopInterface;
 use Evenement\EventEmitter;
 use Socket\Raw\Socket as RawSocket;
 use Datagram\SocketInterface;
@@ -11,28 +11,28 @@ use \Exception;
 class Datagram extends EventEmitter implements SocketInterface
 {
     private $socket;
-    private $poller;
+    private $loop;
     private $buffer;
     private $bufferSize = 65536;
 
-    public function __construct(RawSocket $socket, SelectPoller $poller)
+    public function __construct(RawSocket $socket, LoopInterface $loop)
     {
         $this->socket = $socket;
-        $this->poller = $poller;
+        $this->loop = $loop;
 
-        $this->buffer = new DatagramBuffer($socket, $poller);
+        $this->buffer = new DatagramBuffer($socket, $loop);
 
         $this->resume();
     }
 
     public function resume()
     {
-        $this->poller->addReadSocket($this->socket->getResource(), array($this, 'handleRead'));
+        $this->loop->addReadStream($this->socket->getResource(), array($this, 'handleRead'));
     }
 
     public function pause()
     {
-        $this->poller->removeReadSocket($this->socket->getResource());
+        $this->loop->removeReadStream($this->socket->getResource());
     }
 
     /**

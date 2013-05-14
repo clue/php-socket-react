@@ -2,7 +2,6 @@
 
 namespace Socket\React\Stream;
 
-use Socket\React\EventLoop\SelectPoller;
 use React\Stream\WritableStreamInterface;
 use React\Stream\ReadableStreamInterface;
 use React\Stream\Util;
@@ -17,7 +16,7 @@ class Stream extends EventEmitter implements ReadableStreamInterface, WritableSt
      * @var RawSocket
      */
     protected $socket;
-    private $poller;
+    private $loop;
 
     private $bufferSize = 65536;
 
@@ -25,12 +24,12 @@ class Stream extends EventEmitter implements ReadableStreamInterface, WritableSt
     protected $writable = true;
     protected $closing = false;
 
-    public function __construct(RawSocket $socket, SelectPoller $poller)
+    public function __construct(RawSocket $socket, LoopInterface $loop)
     {
         $this->socket = $socket;
-        $this->poller = $poller;
+        $this->loop = $loop;
 
-        $this->buffer = new StreamBuffer($socket, $poller);
+        $this->buffer = new StreamBuffer($socket, $loop);
 
         $that = $this;
 
@@ -48,12 +47,12 @@ class Stream extends EventEmitter implements ReadableStreamInterface, WritableSt
 
     public function resume()
     {
-        $this->poller->addReadSocket($this->socket->getResource(), array($this, 'handleData'));
+        $this->loop->addReadStream($this->socket->getResource(), array($this, 'handleData'));
     }
 
     public function pause()
     {
-        $this->poller->removeReadSocket($this->socket->getResource());
+        $this->loop->removeReadStream($this->socket->getResource());
     }
 
     public function isReadable()

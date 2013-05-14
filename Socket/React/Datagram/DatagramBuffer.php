@@ -2,23 +2,23 @@
 
 namespace Socket\React\Datagram;
 
-use Socket\React\EventLoop\SelectPoller;
+use React\EventLoop\LoopInterface;
 use Socket\Raw\Socket as RawSocket;
 
 class DatagramBuffer
 {
     private $socket;
-    private $poller;
+    private $loop;
 
     private $outgoing = array();
     private $outgoingLength = 0;
 
     private $softLimit = 65536;
 
-    public function __construct(RawSocket $socket, SelectPoller $poller)
+    public function __construct(RawSocket $socket, LoopInterface $loop)
     {
         $this->socket = $socket;
-        $this->poller = $poller;
+        $this->loop   = $loop;
     }
 
     public function send($data, $remote = null)
@@ -26,8 +26,8 @@ class DatagramBuffer
         $this->outgoing []= array($data, $remote);
         $this->outgoingLength += strlen($data);
 
-        $this->poller->addWriteSocket($this->socket->getResource(), array($this, 'handleWrite'));
-        $this->poller->notify();
+        $this->loop->addWriteStream($this->socket->getResource(), array($this, 'handleWrite'));
+        // $this->poller->notify();
 
         return ($this->outgoingLength < $this->softLimit);
     }
@@ -44,13 +44,13 @@ class DatagramBuffer
         }
 
         if (!$this->outgoing) {
-            $this->poller->removeWriteSocket($this->socket->getResource());
+            $this->loop->removeWriteStream($this->socket->getResource());
         }
     }
 
     public function close()
     {
-        $this->poller->removeWriteSocket($this->socket->getResource());
+        $this->loop->removeWriteStream($this->socket->getResource());
 
         $this->outgoing = array();
         $this->outgoingLength = 0;
