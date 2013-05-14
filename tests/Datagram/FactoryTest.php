@@ -50,6 +50,31 @@ class DatagramFactoryTest extends TestCase
         $this->loop->tick();
     }
 
+    public function testCreateClientUdp4Broadcast()
+    {
+        $promise = $this->factory->createClient('udp://255.255.255.255:27015', array('broadcast' => true));
+
+        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
+
+        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Socket'), $this->expectCallableNever());
+
+        $this->loop->tick();
+    }
+
+    /**
+     * explicitly send packets via port 27016
+     */
+    public function testCreateClientUdp4Bind()
+    {
+        $promise = $this->factory->createClient('udp://127.0.0.1:53', array('bindto' => '0:27016'));
+
+        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
+
+        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Socket'), $this->expectCallableNever());
+
+        $this->loop->tick();
+    }
+
     public function testCreateClientSchemelessUdp4()
     {
         $promise = $this->factory->createClient('127.0.0.1:53');
@@ -92,6 +117,17 @@ class DatagramFactoryTest extends TestCase
     public function testCreateServerUdp4()
     {
         $promise = $this->factory->createServer('udp://127.0.0.1:0');
+
+        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
+
+        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Socket'), $this->expectCallableNever());
+
+        $this->loop->tick();
+    }
+
+    public function testCreateServerUdp4Broadcast()
+    {
+        $promise = $this->factory->createServer('udp://255.255.255.255:27015', array('broadcast' => true));
 
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
