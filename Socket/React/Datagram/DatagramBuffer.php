@@ -2,7 +2,7 @@
 
 namespace Socket\React\Datagram;
 
-use Socket\React\SelectPoller;
+use Socket\React\EventLoop\SelectPoller;
 use Socket\Raw\Socket as RawSocket;
 
 class DatagramBuffer

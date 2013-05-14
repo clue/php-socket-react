@@ -2,7 +2,7 @@
 
 namespace Socket\React\Stream;
 
-use Socket\React\SelectPoller;
+use Socket\React\EventLoop\SelectPoller;
 use Evenement\EventEmitter;
 use React\EventLoop\LoopInterface;
 use React\Stream\WritableStreamInterface;

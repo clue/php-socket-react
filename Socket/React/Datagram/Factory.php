@@ -3,7 +3,7 @@
 namespace Socket\React\Datagram;
 
 
-use Socket\React\SelectPoller;
+use Socket\React\EventLoop\SelectPoller;
 use React\Promise\When;
 use React\Promise\Deferred;
 use React\EventLoop\LoopInterface;
