@@ -6,7 +6,7 @@ use React\EventLoop\LoopInterface;
 use \Exception;
 
 // modelled closely after React\EventLoop\StreamSelectLoop
-class SelectPoller
+class SelectPoller extends SocketSelectLoop
 {
     private $loop;
     private $tid = null;
@@ -15,13 +15,10 @@ class SelectPoller
     private $pollDurationSec = 0;
     private $pollDurationUsec = 0;
 
-    private $readSockets = array();
-    private $readListeners = array();
-    private $writeSockets = array();
-    private $writeListeners = array();
-
     public function __construct(LoopInterface $loop)
     {
+        parent::__construct();
+
         $this->loop = $loop;
     }
 
@@ -71,16 +68,16 @@ class SelectPoller
         return $this;
     }
 
-    public function resume()
+    private function resume()
     {
-        if ($this->tid === null && ($this->readSockets || $this->writeSockets)) {
+        if ($this->tid === null && $this->hasListeners()) {
             $this->tid = $this->loop->addPeriodicTimer($this->pollInterval, array($this, 'poll'));
         }
     }
 
-    public function pause()
+    private function pause()
     {
-        if ($this->tid !== null) {
+        if ($this->tid !== null && !$this->hasListeners()) {
             $this->loop->cancelTimer($this->tid);
             $this->tid = null;
         }
@@ -88,73 +85,56 @@ class SelectPoller
 
     public function poll()
     {
-        $read = $this->readSockets ? $this->readSockets : array();
-        $write = $this->writeSockets ? $this->writeSockets : array();
-        $ret = socket_select($read, $write, $x, $this->pollDurationSec, $this->pollDurationUsec);
-        if ($ret) {
-            foreach ($read as $socket) {
-                $id = (int)$socket;
-                if (isset($this->readListeners[$id])) {
-                    call_user_func($this->readListeners[$id], $socket, $this);
-                }
-            }
-            foreach ($write as $socket) {
-                $id = (int)$socket;
-                if (isset($this->writeListeners[$id])) {
-                    call_user_func($this->writeListeners[$id], $socket, $this);
-                }
-            }
-        } else if ($ret === false) {
-            $error = error_get_last();
-            throw new Exception('Socket operation "socket_select()" failed: ' . $error['message']);
-        }
+        $this->runStreamSelect();
     }
 
-    public function addReadSocket($socket, $listener)
+    protected function getNextEventTimeInMicroSeconds()
     {
-        $id = (int)$socket;
-        if (!isset($this->readSockets[$id])) {
-            $this->readSockets[$id] = $socket;
-            $this->readListeners[$id] = $listener;
-
-            $this->resume();
-        }
+        return $this->getPollDuration() * 1000000;
     }
 
-    public function addWriteSocket($socket, $listener)
+    public function addReadStream($stream, $listener)
     {
-        $id = (int)$socket;
-        if (!isset($this->writeSockets[$id])) {
-            $this->writeSockets[$id] = $socket;
-            $this->writeListeners[$id] = $listener;
-
-            $this->resume();
-        }
+        parent::addReadStream($stream, $listener);
+        $this->resume();
     }
 
-    public function removeReadSocket($socket)
+    public function addWriteStream($stream, $listener)
     {
-        $id = (int)$socket;
-        unset($this->readSockets[$id], $this->readListeners[$id]);
-
-        if (!$this->readSockets && !$this->writeSockets) {
-            $this->pause();
-        }
+        parent::addWriteStream($stream, $listener);
+        $this->resume();
     }
 
-    public function removeWriteSocket($socket)
+    public function removeReadStream($stream)
     {
-        $id = (int)$socket;
-        unset($this->writeSockets[$id], $this->writeListeners[$id]);
-
-        if (!$this->writeSockets && !$this->readSockets) {
-            $this->pause();
-        }
+        parent::removeReadStream($stream);
+        $this->pause();
     }
 
-    public function removeSocket($socket)
+    public function removeWriteStream($stream)
     {
-        $this->removeReadSocket($socket);
-        $this->removeWriteSocket($socket);
+        parent::removeWriteStream($stream);
+        $this->pause();
+    }
+
+    public function removeStream($stream)
+    {
+        parent::removeStream($stream);
+        $this->pause();
+    }
+
+    public function tick()
+    {
+        return $this->loop->tick();
+    }
+
+    public function run()
+    {
+        return $this->loop->run();
+    }
+
+    public function stop()
+    {
+        return $this->loop->stop();
     }
 }
