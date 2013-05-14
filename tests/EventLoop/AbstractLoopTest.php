@@ -1,6 +1,7 @@
 <?php
 
 use Socket\React\Datagram\Factory;
+use Socket\Raw\Factory as RawFactory;
 
 abstract class AbstractLoopTest extends TestCase
 {
@@ -12,6 +13,8 @@ abstract class AbstractLoopTest extends TestCase
 
     protected $loop;
 
+    protected $rawFactory;
+
     public function setUp()
     {
         $this->loop = $this->createLoop();
@@ -19,18 +22,48 @@ abstract class AbstractLoopTest extends TestCase
         $this->assertInstanceOf('React\EventLoop\LoopInterface', $this->loop);
 
         $this->factory = new Factory($this->loop);
+
+        $this->rawFactory = new RawFactory();
     }
 
     abstract function createLoop();
 
-    public function testCreateClientUdp4()
+    public function testClientTcp4()
     {
-        $promise = $this->factory->createClient('udp://127.0.0.1:53');
+        $socket = $this->rawFactory->createClient('www.google.com:80');
 
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
+        $loop = $this->loop;
+        $this->loop->addWriteStream($socket->getResource(), function($resource, $loop) use ($socket) {
+            $loop->removeWriteStream($resource);
 
-        $promise->then($this->expectCallableOnceParameter('Socket\React\Datagram\Datagram'), $this->expectCallableNever());
+            $socket->write("GET / HTTP/1.1\r\nHost: www.google.com\r\n\r\n");
+        });
 
-        $this->loop->tick();
+        $this->loop->addReadStream($socket->getResource(), function($resource, $loop) use ($socket) {
+            $loop->removeReadStream($resource);
+
+        });
+
+        $this->loop->run();
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAddReadStreamInvalid()
+    {
+        $stream = fopen('php://temp', 'r+');
+
+        $this->loop->addReadStream($stream, null);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAddWriteStreamInvalid()
+    {
+        $stream = fopen('php://temp', 'r+');
+
+        $this->loop->addWriteStream($stream, null);
     }
 }
