@@ -168,6 +168,11 @@ class SocketSelectLoop implements LoopInterface
         }
     }
 
+    public function hasListeners()
+    {
+        return ($this->readStreams || $this->writeStreams);
+    }
+
     public function tick()
     {
         $this->timers->tick();
