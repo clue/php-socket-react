@@ -2,7 +2,6 @@
 
 namespace Socket\React\Datagram;
 
-
 use React\EventLoop\StreamSelectLoop;
 use Socket\React\EventLoop\SelectPoller;
 use React\Promise\When;
@@ -10,7 +9,7 @@ use React\Promise\Deferred;
 use React\EventLoop\LoopInterface;
 use Socket\Raw\Factory as RawFactory;
 use Socket\Raw\Socket as RawSocket;
-use \Exception;
+use Exception;
 
 class Factory
 {
@@ -140,7 +139,7 @@ class Factory
 
     public function createFromRaw(RawSocket $rawSocket)
     {
-        return new Socket($rawSocket, $this->getSocketLoop());
+        return new Socket($this->getSocketLoop(), $rawSocket);
     }
 
     /**
