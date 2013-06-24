@@ -26,10 +26,7 @@ class DatagramSocketTest extends TestCase
             $socket->on('message', function($message, $remote, Socket $socket) use ($loop) {
                 // for every message we receive, send back the reversed message (ABC -> CBA)
                 $socket->send(strrev($message), $remote);
-
-                $loop->addTimer(0.1, function() use ($socket) {
-                    $socket->close();
-                });
+                $socket->end();
             });
         });
 
