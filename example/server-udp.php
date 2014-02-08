@@ -8,7 +8,7 @@ $address = 'localhost:1337';
 
 $factory = new Socket\React\Datagram\Factory($loop);
 
-$factory->createServer($address)->then(function (Socket\React\Datagram\Datagram $socket) use ($loop, $address) {
+$factory->createServer($address)->then(function (Socket\React\Datagram\Socket $socket) use ($loop, $address) {
     var_dump('Server listening on ' . $address .' established');
 
     $socket->on('message', function($data, $peer) use ($socket) {

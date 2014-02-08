@@ -8,7 +8,7 @@ $address = 'localhost:1337';
 
 $factory = new Socket\React\Datagram\Factory($loop);
 
-$factory->createClient($address)->then(function (Socket\React\Datagram\Datagram $socket) use ($loop, $address) {
+$factory->createClient($address)->then(function (Socket\React\Datagram\Socket $socket) use ($loop, $address) {
     var_dump('Client socket connected to ' . $address . ' created');
 
     var_dump('Sending "test"');
