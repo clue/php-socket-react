@@ -3,11 +3,22 @@
 namespace Socket\React\Datagram;
 
 use Datagram\Socket as DatagramSocket;
-use Socket\React\Datagram\DatagramBuffer;
+use Datagram\Buffer as DatagramBuffer;
+use Socket\React\Datagram\Buffer;
+use React\EventLoop\LoopInterface;
 use Exception;
 
 class Socket extends DatagramSocket
 {
+    public function __construct(LoopInterface $loop, $socket, DatagramBuffer $buffer = null)
+    {
+        if ($buffer === null) {
+            $buffer = new Buffer($loop, $socket);
+        }
+
+        parent::__construct($loop, $socket, $buffer);
+    }
+
     public function resume()
     {
         $this->loop->addReadStream($this->socket->getResource(), array($this, 'onReceive'));
@@ -16,11 +27,6 @@ class Socket extends DatagramSocket
     public function pause()
     {
         $this->loop->removeReadStream($this->socket->getResource());
-    }
-
-    protected function createBuffer()
-    {
-        return new DatagramBuffer($this->loop, $this->socket);
     }
 
     protected function handleReceive(&$remote)

@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "clue/socket-raw": "0.1.*",
-        "clue/datagram": "dev-abstract-buffer",
+        "clue/datagram": "dev-ref",
         "evenement/evenement": "1.*",
         "react/event-loop": ">=0.2, <0.4",
         "react/promise": "1.*",
