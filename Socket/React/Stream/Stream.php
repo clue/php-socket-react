@@ -119,7 +119,12 @@ class Stream extends EventEmitter implements ReadableStreamInterface, WritableSt
 
     public function handleData()
     {
-        $data = $this->socket->read($this->bufferSize);
+        try {
+            $data = $this->socket->read($this->bufferSize);
+        }
+        catch (\Exception $e) {
+            return $this->end();
+        }
 
         if ($data === '') {
             $this->end();
