@@ -46,24 +46,4 @@ abstract class AbstractLoopTest extends TestCase
 
         $this->loop->run();
     }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testAddReadStreamInvalid()
-    {
-        $stream = fopen('php://temp', 'r+');
-
-        $this->loop->addReadStream($stream, null);
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testAddWriteStreamInvalid()
-    {
-        $stream = fopen('php://temp', 'r+');
-
-        $this->loop->addWriteStream($stream, null);
-    }
 }
