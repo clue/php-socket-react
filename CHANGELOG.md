@@ -6,18 +6,23 @@ you spot any mistakes.
 
 ## 0.2.0 (2014-03-xx)
 
-* BC break: The event loop handling has been rewritten and now resides in the
-  `Socket\React\EventLoop` namespace. Whole new API regarding `SelectPoller`
-  and dedicated `SocketSelectLoop`.
-* BC break: Rename `Datagram\Datagram` to `Datagram\Socket`
-* BC break: Remove `bind()`, `connect()` and `setOptionBroadcast()` methods and
-  add respective options to the `Datagram\Factory` class (#1). This is done in
-  order to keep the API clean and to avoid confusion as to when it's safe to
-  invoke those methods.
-* Feature: Require clue/datagram and implements its `Datagram\SocketInterface`
-  for `Socket\React\Datagram\Socket`. This means that you can now pass an
-  instance of this class where other libaries expect a datagram socket.
-* Fix: Typo in `Socket\React\Stream\Server` that passed null (thanks @cboden!)
+* BC break: More SOLID design, reuse existing code, refactor code to fix
+  ambiguities and ease extending
+  ([#1](https://github.com/clue/socket-react/pull/1))
+  * The event loop handling has been rewritten and now resides in the
+    `Socket\React\EventLoop` namespace. Whole new API regarding `SelectPoller`
+    and dedicated `SocketSelectLoop`.
+  * Rename `Datagram\Datagram` to `Datagram\Socket`
+  * Merge `Stream\Stream` into `Stream\Connection`
+  * Remove `bind()`, `connect()` and `setOptionBroadcast()` methods from
+    `Datagram\Socket` and add respective options to the `Datagram\Factory` class.
+    This is done in order to keep the API clean and to avoid confusion as to
+    when it's safe to invoke those methods.
+  * Require clue/datagram and implement its `Datagram\SocketInterface`
+    for `Socket\React\Datagram\Socket`. This means that you can now pass an
+    instance of this class where other libaries expect a datagram socket.
+* Fix: Typo in `Socket\React\Stream\Server` that passed null
+  ([#4](https://github.com/clue/socket-react/pull/4) thanks @cboden!)
 * Fix: End connection if reading from stream socket fails
   ([#7](https://github.com/clue/socket-react/pull/7))
 * Fix: Compatibility with hhvm
