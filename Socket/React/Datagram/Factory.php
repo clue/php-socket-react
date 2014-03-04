@@ -134,7 +134,7 @@ class Factory
 
     public function createIcmp6()
     {
-        return $this->createFromRaw($this->rawFactory->createIcmp4());
+        return $this->createFromRaw($this->rawFactory->createIcmp6());
     }
 
     public function createFromRaw(RawSocket $rawSocket)
