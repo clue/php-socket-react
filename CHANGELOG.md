@@ -4,12 +4,18 @@ This file is a manually maintained list of changes for each release. Feel free
 to add your changes here when sending pull requests. Also send corrections if
 you spot any mistakes.
 
-## 0.2.0 (2014-02-xx)
+## 0.2.0 (2014-03-xx)
 
 * BC break: The event loop handling has been rewritten and now resides in the
-  `Socket\React\EventLoop` namespace.
+  `Socket\React\EventLoop` namespace. Whole new API regarding `SelectPoller`
+  and dedicated `SocketSelectLoop`.
+* BC break: Rename `Datagram\Datagram` to `Datagram\Socket`
+* BC break: Remove `bind()`, `connect()` and `setOptionBroadcast()` methods and
+  add respective options to the `Datagram\Factory` class (#1). This is done in
+  order to keep the API clean and to avoid confusion as to when it's safe to
+  invoke those methods.
 * Feature: Require clue/datagram and implements its `Datagram\SocketInterface`
-  for `Socket\React\Datagram\Datagram`. This means that you can now pass an
+  for `Socket\React\Datagram\Socket`. This means that you can now pass an
   instance of this class where other libaries expect a datagram socket.
 * Fix: Typo in `Socket\React\Stream\Server` that passed null (thanks @cboden!)
 * Fix: End connection if reading from stream socket fails
@@ -22,4 +28,3 @@ you spot any mistakes.
 ## 0.0.0 (2013-04-05)
 
 * Initial concept
-
