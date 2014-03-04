@@ -12,6 +12,8 @@ you spot any mistakes.
   for `Socket\React\Datagram\Datagram`. This means that you can now pass an
   instance of this class where other libaries expect a datagram socket.
 * Fix: Typo in `Socket\React\Stream\Server` that passed null (thanks @cboden!)
+* Fix: End connection if reading from stream socket fails
+  ([#7](https://github.com/clue/socket-react/pull/7))
 
 ## 0.1.0 (2013-04-18)
 
