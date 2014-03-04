@@ -4,7 +4,7 @@ This file is a manually maintained list of changes for each release. Feel free
 to add your changes here when sending pull requests. Also send corrections if
 you spot any mistakes.
 
-## 0.2.1 (2014-03-xx)
+## 0.2.1 (2014-03-04)
 
 * Fix: Make sure `Socket\Factory::createIcmp6()` actually returns an ICMPv6 socket
   ([#8](https://github.com/clue/socket-react/pull/8))
