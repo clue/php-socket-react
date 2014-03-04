@@ -29,9 +29,7 @@ class SocketSelectLoop implements LoopInterface
 
     public function addReadStream($stream, $listener)
     {
-        if (get_resource_type($stream) !== 'Socket') {
-            throw new InvalidArgumentException('Socket loop only accepts resources of type "Socket", but "' . get_resource_type($stream) .'" given');
-        }
+        $this->assertStream($stream);
 
         $id = (int) $stream;
 
@@ -43,9 +41,7 @@ class SocketSelectLoop implements LoopInterface
 
     public function addWriteStream($stream, $listener)
     {
-        if (get_resource_type($stream) !== 'Socket') {
-            throw new InvalidArgumentException('Socket loop only accepts resources of type "Socket", but "' . get_resource_type($stream) .'" given');
-        }
+        $this->assertStream($stream);
 
         $id = (int) $stream;
 
@@ -193,5 +189,20 @@ class SocketSelectLoop implements LoopInterface
     public function stop()
     {
         $this->running = false;
+    }
+
+    private function assertStream($stream)
+    {
+        static $checked = array();
+        $type = get_resource_type($stream);
+        if (is_resource($stream) && !isset($checked[$type])) {
+            $except = array($stream);
+            $null = null;
+            $checked[$type] = (@socket_select($null, $null, $except, 0) !== false);
+        }
+
+        if (!$checked[$type]) {
+            throw new InvalidArgumentException('Socket loop only accepts resources of type "Socket", but "' . $type .'" given');
+        }
     }
 }

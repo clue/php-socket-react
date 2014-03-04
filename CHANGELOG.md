@@ -20,6 +20,8 @@ you spot any mistakes.
 * Fix: Typo in `Socket\React\Stream\Server` that passed null (thanks @cboden!)
 * Fix: End connection if reading from stream socket fails
   ([#7](https://github.com/clue/socket-react/pull/7))
+* Fix: Compatibility with hhvm
+  ([#8](https://github.com/clue/socket-react/pull/8))
 
 ## 0.1.0 (2013-04-18)
 
