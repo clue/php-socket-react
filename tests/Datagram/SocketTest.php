@@ -21,8 +21,10 @@ class DatagramSocketTest extends TestCase
 
     public function testClientServerUdp4()
     {
+        $that = $this;
         $loop = $this->loop;
-        $this->factory->createServer('127.0.0.1:1337')->then(function (Socket $socket) use ($loop) {
+        $this->factory->createServer('127.0.0.1:1337')->then(function (Socket $socket) use ($loop, $that) {
+            $that->assertEquals('127.0.0.1:1337', $socket->getLocalAddress());
             $socket->on('message', function($message, $remote, Socket $socket) use ($loop) {
                 // for every message we receive, send back the reversed message (ABC -> CBA)
                 $socket->send(strrev($message), $remote);
@@ -30,9 +32,9 @@ class DatagramSocketTest extends TestCase
             });
         });
 
-        $that = $this;
         $once = $this->expectCallableOnce();
         $this->factory->createClient('127.0.0.1:1337')->then(function (Socket $socket) use ($that, $once) {
+            $that->assertEquals('127.0.0.1:1337', $socket->getRemoteAddress());
             $socket->send('test');
 
             $socket->on('message', $once);

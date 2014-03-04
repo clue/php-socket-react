@@ -29,6 +29,16 @@ class Socket extends DatagramSocket
         $this->loop->removeReadStream($this->socket->getResource());
     }
 
+    public function getRemoteAddress()
+    {
+        return $this->socket->getPeerName();
+    }
+
+    public function getLocalAddress()
+    {
+        return $this->socket->getSockName();
+    }
+
     protected function handleReceive(&$remote)
     {
         return $this->socket->recvFrom($this->bufferSize, 0, $remote);
