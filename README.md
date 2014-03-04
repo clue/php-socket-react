@@ -9,7 +9,7 @@ The recommended way to install this library is [through composer](http://getcomp
 ```JSON
 {
     "require": {
-        "clue/socket-react": "dev-master"
+        "clue/socket-react": "0.2.*"
     }
 }
 ```
