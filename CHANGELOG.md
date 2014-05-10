@@ -4,6 +4,14 @@ This file is a manually maintained list of changes for each release. Feel free
 to add your changes here when sending pull requests. Also send corrections if
 you spot any mistakes.
 
+## 0.2.2 (2014-05-10)
+
+* Support [clue/socket-raw](https://github.com/clue/socket-raw) stable
+  version `1.*` and update dependencies
+  ([#10](https://github.com/clue/socket-react/pull/10))
+* Use PSR-4 layout
+  ([#12](https://github.com/clue/socket-react/pull/12))
+
 ## 0.2.1 (2014-03-04)
 
 * Fix: Make sure `Socket\Factory::createIcmp6()` actually returns an ICMPv6 socket
