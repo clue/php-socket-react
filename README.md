@@ -1,6 +1,6 @@
-# clue/socket-react [![Build Status](https://travis-ci.org/clue/socket-react.png?branch=master)](https://travis-ci.org/clue/socket-react)
+# clue/socket-react [![Build Status](https://travis-ci.org/clue/reactphp-socket.png?branch=master)](https://travis-ci.org/clue/reactphp-socket)
 
-Binding for raw sockets (ext-sockets) in reactphp
+Binding for raw sockets (ext-sockets) in React PHP.
 
 ## Install
 
