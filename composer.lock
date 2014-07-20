@@ -1,9 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "00098d3a31f9aec9a601e54af32fac7b",
+    "hash": "6279398d0c46089bec418bf949d6a873",
     "packages": [
         {
             "name": "clue/datagram",

@@ -2,7 +2,7 @@
     "name": "clue/socket-react",
     "description": "Binding for raw sockets (ext-sockets) in reactphp",
     "keywords": ["sockets", "low-level", "ext-sockets", "react", "async"],
-    "homepage": "https://github.com/clue/reactphp-socket",
+    "homepage": "https://github.com/clue/php-socket-react",
     "license": "MIT",
     "authors": [
         {

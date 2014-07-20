@@ -1,4 +1,4 @@
-# clue/socket-react [![Build Status](https://travis-ci.org/clue/reactphp-socket.png?branch=master)](https://travis-ci.org/clue/reactphp-socket)
+# clue/socket-react [![Build Status](https://travis-ci.org/clue/php-socket-react.svg?branch=master)](https://travis-ci.org/clue/php-socket-react)
 
 Binding for raw sockets (ext-sockets) in React PHP.
 
