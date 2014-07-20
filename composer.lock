@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6279398d0c46089bec418bf949d6a873",
+    "hash": "22ebdf28bbd98d4963b54a517e9cd67f",
     "packages": [
         {
             "name": "clue/datagram",
@@ -408,9 +408,9 @@
     "stability-flags": [
 
     ],
-    "platform": [
-
-    ],
+    "platform": {
+        "php": ">=5.3"
+    },
     "platform-dev": [
 
     ]

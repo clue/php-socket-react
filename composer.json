@@ -11,6 +11,7 @@
         }
     ],
     "require": {
+        "php": ">=5.3",
         "clue/socket-raw": "1.* | 0.1.*",
         "clue/datagram": "0.4.*",
         "evenement/evenement": "1.*",
