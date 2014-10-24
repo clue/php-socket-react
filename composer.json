@@ -13,12 +13,12 @@
     "require": {
         "php": ">=5.3",
         "clue/socket-raw": "1.* | 0.1.*",
-        "clue/datagram": "0.4.*",
         "evenement/evenement": "1.*",
         "react/event-loop": ">=0.2, <0.4",
         "react/promise": "1.*",
         "react/stream": ">=0.2, <0.4",
-        "react/socket": ">=0.2, <0.4"
+        "react/socket": ">=0.2, <0.4",
+        "react/datagram": "~1.0"
     },
     "autoload": {
         "psr-4": {"Socket\\React\\": "src"}

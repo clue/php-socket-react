@@ -2,8 +2,8 @@
 
 namespace Socket\React\Datagram;
 
-use Datagram\Socket as DatagramSocket;
-use Datagram\Buffer as DatagramBuffer;
+use React\Datagram\Socket as DatagramSocket;
+use React\Datagram\Buffer as DatagramBuffer;
 use Socket\React\Datagram\Buffer;
 use React\EventLoop\LoopInterface;
 use Exception;

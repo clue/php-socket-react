@@ -4,51 +4,8 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "22ebdf28bbd98d4963b54a517e9cd67f",
+    "hash": "9848fc44feb1d3cc402f44c8fbdc8341",
     "packages": [
-        {
-            "name": "clue/datagram",
-            "version": "v0.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/clue/datagram.git",
-                "reference": "726b8ea3c5259ec61d580944c6f37ad3559dac3c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/clue/datagram/zipball/726b8ea3c5259ec61d580944c6f37ad3559dac3c",
-                "reference": "726b8ea3c5259ec61d580944c6f37ad3559dac3c",
-                "shasum": ""
-            },
-            "require": {
-                "react/dns": ">=0.2, <0.4",
-                "react/event-loop": ">=0.2, <0.4",
-                "react/promise": "1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Datagram": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "UDP datagram socket client and server for reactphp",
-            "homepage": "https://github.com/clue/datagram",
-            "keywords": [
-                "Socket",
-                "async",
-                "client",
-                "datagram",
-                "dgram",
-                "react",
-                "server",
-                "udp"
-            ],
-            "time": "2014-03-03 23:29:41"
-        },
         {
             "name": "clue/socket-raw",
             "version": "v1.0.0",
@@ -180,6 +137,57 @@
                 "cache"
             ],
             "time": "2013-04-24 08:33:43"
+        },
+        {
+            "name": "react/datagram",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/datagram.git",
+                "reference": "a476b743cd4beed93ba7c83abb0288b87f8206b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/datagram/zipball/a476b743cd4beed93ba7c83abb0288b87f8206b6",
+                "reference": "a476b743cd4beed93ba7c83abb0288b87f8206b6",
+                "shasum": ""
+            },
+            "require": {
+                "evenement/evenement": "~1.0|~2.0",
+                "php": ">=5.3",
+                "react/dns": ">=0.2, <0.5",
+                "react/event-loop": ">=0.2, <0.5",
+                "react/promise": "~1.0|~2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\Datagram\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@lueck.tv"
+                }
+            ],
+            "description": "UDP datagram socket client and server for reactphp",
+            "homepage": "https://github.com/reactphp/datagram",
+            "keywords": [
+                "Socket",
+                "async",
+                "client",
+                "datagram",
+                "dgram",
+                "react",
+                "server",
+                "udp"
+            ],
+            "time": "2014-10-23 22:14:56"
         },
         {
             "name": "react/dns",
@@ -398,20 +406,13 @@
             "time": "2013-07-09 00:44:12"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": [],
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.3"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

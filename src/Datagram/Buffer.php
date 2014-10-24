@@ -2,7 +2,7 @@
 
 namespace Socket\React\Datagram;
 
-use Datagram\Buffer as DatagramBuffer;
+use React\Datagram\Buffer as DatagramBuffer;
 
 class Buffer extends DatagramBuffer
 {
