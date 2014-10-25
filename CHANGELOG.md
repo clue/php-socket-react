@@ -4,6 +4,11 @@ This file is a manually maintained list of changes for each release. Feel free
 to add your changes here when sending pull requests. Also send corrections if
 you spot any mistakes.
 
+## 0.3.0 (2014-10-25)
+
+* BC break: Replace clue/datagram with react/datagram
+  ([#16](https://github.com/clue/php-socket-react/pull/16))
+
 ## 0.2.2 (2014-05-10)
 
 * Support [clue/socket-raw](https://github.com/clue/socket-raw) stable

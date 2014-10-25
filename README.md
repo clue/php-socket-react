@@ -32,7 +32,7 @@ The recommended way to install this library is [through composer](http://getcomp
 ```JSON
 {
     "require": {
-        "clue/socket-react": "0.2.*"
+        "clue/socket-react": "~0.3.0"
     }
 }
 ```
