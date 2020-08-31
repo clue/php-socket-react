@@ -4,7 +4,7 @@ namespace Socket\React\EventLoop;
 
 use React\EventLoop\LoopInterface;
 use React\EventLoop\Timer\Timer;
-use React\EventLoop\Timer\TimerInterface;
+use React\EventLoop\TimerInterface;
 use React\EventLoop\Timer\Timers;
 use InvalidArgumentException;
 
@@ -31,7 +31,7 @@ class SocketSelectLoop implements LoopInterface
     {
         $this->assertStream($stream);
 
-        $id = (int) $stream;
+        $id = (int)$stream;
 
         if (!isset($this->readStreams[$id])) {
             $this->readStreams[$id] = $stream;
@@ -43,7 +43,7 @@ class SocketSelectLoop implements LoopInterface
     {
         $this->assertStream($stream);
 
-        $id = (int) $stream;
+        $id = (int)$stream;
 
         if (!isset($this->writeStreams[$id])) {
             $this->writeStreams[$id] = $stream;
@@ -53,7 +53,7 @@ class SocketSelectLoop implements LoopInterface
 
     public function removeReadStream($stream)
     {
-        $id = (int) $stream;
+        $id = (int)$stream;
 
         unset(
             $this->readStreams[$id],
@@ -63,7 +63,7 @@ class SocketSelectLoop implements LoopInterface
 
     public function removeWriteStream($stream)
     {
-        $id = (int) $stream;
+        $id = (int)$stream;
 
         unset(
             $this->writeStreams[$id],
@@ -79,7 +79,7 @@ class SocketSelectLoop implements LoopInterface
 
     public function addTimer($interval, $callback)
     {
-        $timer = new Timer($this, $interval, $callback, false);
+        $timer = new Timer($interval, $callback, false);
         $this->timers->add($timer);
 
         return $timer;
@@ -87,7 +87,7 @@ class SocketSelectLoop implements LoopInterface
 
     public function addPeriodicTimer($interval, $callback)
     {
-        $timer = new Timer($this, $interval, $callback, true);
+        $timer = new Timer($interval, $callback, true);
         $this->timers->add($timer);
 
         return $timer;
@@ -146,18 +146,18 @@ class SocketSelectLoop implements LoopInterface
         if (socket_select($read, $write, $except, 0, $this->getNextEventTimeInMicroSeconds()) > 0) {
             if ($read) {
                 foreach ($read as $stream) {
-                    $listener = $this->readListeners[(int) $stream];
+                    $listener = $this->readListeners[(int)$stream];
                     call_user_func($listener, $stream, $this);
                 }
             }
 
             if ($write) {
                 foreach ($write as $stream) {
-                    if (!isset($this->writeListeners[(int) $stream])) {
+                    if (!isset($this->writeListeners[(int)$stream])) {
                         continue;
                     }
 
-                    $listener = $this->writeListeners[(int) $stream];
+                    $listener = $this->writeListeners[(int)$stream];
                     call_user_func($listener, $stream, $this);
                 }
             }
@@ -202,7 +202,34 @@ class SocketSelectLoop implements LoopInterface
         }
 
         if (!$checked[$type]) {
-            throw new InvalidArgumentException('Socket loop only accepts resources of type "Socket", but "' . $type .'" given');
+            throw new InvalidArgumentException('Socket loop only accepts resources of type "Socket", but "' . $type . '" given');
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function futureTick($listener)
+    {
+        throw new \Exception('Not implemented yet');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addSignal($signal, $listener)
+    {
+        throw new \Exception('Not implemented yet');
+
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeSignal($signal, $listener)
+    {
+        throw new \Exception('Not implemented yet');
+    }
+
+
 }
