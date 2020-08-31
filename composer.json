@@ -18,7 +18,8 @@
         "react/promise": "^2.0",
         "react/stream": "^1.0",
         "react/socket": "^1.0",
-        "react/datagram": "^1.0"
+        "react/datagram": "^1.0",
+        "ext-sockets": "*"
     },
     "autoload": {
         "psr-4": {"Socket\\React\\": "src"}
